@@ -1,9 +1,10 @@
-# Local inspection notes and generated previews
-ui-test.md
+build/
+DerivedData/
+Payload/
 *.ipa
+*.mobileprovision
 *.p12
 *.pfx
-*.mobileprovision
+*.cer
 *.pem
 *.key
-.DS_Store
