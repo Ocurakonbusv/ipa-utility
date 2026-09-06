@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://ocurakonbusv.github.io/ipa-utility/sitemap.xml

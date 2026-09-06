@@ -1,0 +1,9 @@
+# Local inspection notes and generated previews
+ui-test.md
+*.ipa
+*.p12
+*.pfx
+*.mobileprovision
+*.pem
+*.key
+.DS_Store

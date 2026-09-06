@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#0d1421">
+  <meta name="description" content="iPhoneからIPA、証明書、プロビジョニングプロファイルを扱うためのIPA Utility。個人用の署名準備とインストール導線をまとめます。">
+  <meta property="og:title" content="IPA Utility — iPhone向けIPAツール">
+  <meta property="og:description" content="IPAの署名準備、入力検証、インストール開始導線をひとつの画面にまとめた独自プロトタイプ。">
+  <title>IPA Utility — iPhone向けIPAツール</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="ambient ambient-one"></div>
+  <div class="ambient ambient-two"></div>
+  <header class="topbar">
+    <a class="brand" href="#top" aria-label="IPA Utility ホーム">
+      <span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 32 32" role="img"><path d="M16 3 28 10v12l-12 7L4 22V10l12-7Z"/><path d="m10 15 4 4 8-8"/></svg></span>
+      <span>IPA Utility</span>
+    </a>
+    <span class="status-pill"><span class="status-dot"></span>Personal workflow</span>
+  </header>
+
+  <main id="top" class="shell">
+    <section class="hero">
+      <div class="eyebrow">IPA · SIGN · INSTALL</div>
+      <h1>iPhoneで使う<br><em>IPAの準備を</em>ひとつに。</h1>
+      <p class="hero-copy">IPA、証明書、プロビジョニングプロファイルを選ぶだけで、署名準備からインストール開始までの状態を確認できます。</p>
+      <div class="hero-note"><span class="note-icon">i</span><span>この公開版は署名サーバー未接続のプロトタイプです。秘密鍵やApple IDは送信しません。</span></div>
+    </section>
+
+    <section class="workspace" aria-label="IPA署名ワークスペース">
+      <div class="workspace-head">
+        <div>
+          <span class="section-kicker">01 / INPUTS</span>
+          <h2>ファイルを準備</h2>
+        </div>
+        <span id="workflowState" class="state-label">待機中</span>
+      </div>
+
+      <div class="file-grid">
+        <label class="file-card required" for="ipaFile">
+          <span class="file-number">01</span>
+          <span class="file-icon">IPA</span>
+          <span class="file-title">IPAファイル</span>
+          <span class="file-help">アプリ本体の`.ipa`を選択</span>
+          <span id="ipaName" class="file-name">未選択</span>
+          <input id="ipaFile" type="file" accept=".ipa,application/octet-stream">
+        </label>
+        <label class="file-card" for="certFile">
+          <span class="file-number">02</span>
+          <span class="file-icon">KEY</span>
+          <span class="file-title">証明書</span>
+          <span class="file-help">`.p12` / `.pfx`を選択</span>
+          <span id="certName" class="file-name">未選択</span>
+          <input id="certFile" type="file" accept=".p12,.pfx,application/x-pkcs12">
+        </label>
+        <label class="file-card" for="profileFile">
+          <span class="file-number">03</span>
+          <span class="file-icon">PRO</span>
+          <span class="file-title">プロファイル</span>
+          <span class="file-help">`.mobileprovision`を選択</span>
+          <span id="profileName" class="file-name">未選択</span>
+          <input id="profileFile" type="file" accept=".mobileprovision,application/octet-stream">
+        </label>
+      </div>
+
+      <div class="security-strip"><span class="lock">◇</span><span>ファイルはこの画面の入力状態にだけ保持され、公開版ではアップロードされません。</span></div>
+
+      <div class="action-row">
+        <button id="prepareButton" class="primary-button" type="button" disabled><span>書き込み準備</span><span class="arrow">↗</span></button>
+        <button id="resetButton" class="ghost-button" type="button">リセット</button>
+      </div>
+    </section>
+
+    <section class="progress-panel" aria-live="polite">
+      <div class="progress-top"><span class="section-kicker">02 / PROCESS</span><span id="progressPercent">0%</span></div>
+      <div class="progress-track"><span id="progressBar"></span></div>
+      <div class="progress-copy"><strong id="progressTitle">ファイルの入力を待っています</strong><span id="progressDetail">IPAを選択すると次の操作が有効になります。</span></div>
+    </section>
+
+    <section class="install-panel" aria-label="インストール開始">
+      <div class="install-copy"><span class="section-kicker">03 / INSTALL</span><h2>iPhoneへインストール</h2><p>署名サーバーが用意できたら、manifest.plistを使ったインストール開始リンクをここへ接続できます。</p></div>
+      <div class="install-controls">
+        <label for="manifestUrl">manifest.plist のHTTPS URL</label>
+        <input id="manifestUrl" type="url" inputmode="url" placeholder="https://example.com/manifest.plist" autocomplete="off">
+        <button id="installButton" class="install-button" type="button" disabled>インストールを開始 <span>↗</span></button>
+        <p id="installHint" class="install-hint">現在は署名サーバー未接続です。</p>
+      </div>
+    </section>
+
+    <section class="limits">
+      <div class="limits-title"><span class="section-kicker">READ BEFORE USE</span><h2>先に知っておくこと</h2></div>
+      <div class="limit-list"><div><span>01</span><p>このツールはユーザー自身が所有する証明書とプロファイルを前提にします。</p></div><div><span>02</span><p>無料Personal Teamのプロファイルには有効期間や端末数の制限があります。</p></div><div><span>03</span><p>インストールには署名済みIPA、正しいBundle ID、HTTPS配布環境が必要です。</p></div></div>
+    </section>
+  </main>
+
+  <dialog id="confirmDialog" class="confirm-dialog">
+    <div class="dialog-mark">✓</div>
+    <p class="section-kicker">READY TO CONTINUE</p>
+    <h2>このアプリを<br>ダウンロードしますか？</h2>
+    <p id="dialogFileName">入力内容を確認して、次へ進みます。</p>
+    <div class="dialog-actions"><button id="cancelDialog" class="ghost-button" type="button">キャンセル</button><button id="confirmDialogButton" class="primary-button" type="button">準備を進める <span>↗</span></button></div>
+  </dialog>
+  <div id="toast" class="toast" role="status"></div>
+  <script src="app.js"></script>
+</body>
+</html>
