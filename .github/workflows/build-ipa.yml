@@ -1,0 +1,103 @@
+name: Build unsigned IPA
+
+
+
+on:
+
+  workflow_dispatch:
+  
+
+
+jobs:
+
+  build:
+  
+    runs-on: macos-14
+    
+    steps:
+    
+      - name: Checkout
+      
+        uses: actions/checkout@v4
+        
+      - name: Install XcodeGen
+      
+        run: brew install xcodegen
+        
+      - name: Generate Xcode project
+      
+        run: xcodegen generate
+        
+      - name: Build unsigned app
+      
+        run: |
+        
+          xcodebuild \
+          
+            -project "IPA Shooter.xcodeproj" \
+            
+            -scheme "IPA Shooter" \
+            
+            -sdk iphoneos \
+            
+            -configuration Release \
+            
+            -derivedDataPath build \
+            
+            CODE_SIGNING_ALLOWED=NO \
+            
+            CODE_SIGNING_REQUIRED=NO \
+            
+            DEVELOPMENT_TEAM=""
+            
+      - name: Package unsigned IPA
+      
+        run: |
+        
+          mkdir -p Payload
+          
+          cp -R "build/Build/Products/Release-iphoneos/IPA Shooter.app" Payload/
+          
+          /usr/bin/zip -qry IPA-Shooter-unsigned.ipa Payload
+          
+      - name: Upload unsigned IPA
+      
+        uses: actions/upload-artifact@v4
+        
+        with:
+        
+          name: IPA-Shooter-unsigned
+          
+          path: IPA-Shooter-unsigned.ipa
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
