@@ -12,7 +12,8 @@ targets:
     type: application
     platform: iOS
     sources:
-      - path: Sources
+      - path: GameApp.swift
+      - path: GameView.swift
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.ocurakonbusv.ipashooter
